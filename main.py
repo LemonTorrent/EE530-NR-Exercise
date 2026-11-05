@@ -4,11 +4,9 @@ import time
 def parse_fivebus_pq(filepath):
     system_data, buses, lines = {}, [], []
     with open(filepath, 'r') as f:
-        print("Parsing FiveBus_PQ data from file...")
         for line in f:
             if line.startswith('%') or not line.strip():
                 continue
-            print("Processing line:", line.strip())
             parts = line.split()
             if parts[0] == 'SYSTEM':
                 system_data = {'name': parts[1], 'baseMVA': float(parts[2]), 'tolerance': float(parts[3])}
@@ -24,6 +22,10 @@ def parse_fivebus_pq(filepath):
                     'Rse': float(parts[3]), 'Xse': float(parts[4]),
                     'Gsh': float(parts[5]), 'Bsh': float(parts[6]), 'Rating': float(parts[7])
                 })
+
+    print(f"Parsed system data: {system_data}")
+    print(f"Parsed buses: {buses}")
+    print(f"Parsed lines: {lines}")
     return system_data, buses, lines
 
 def build_ybus(buses, lines):
