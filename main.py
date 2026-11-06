@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 import time
 
 def parse_fivebus_pq(filepath):
@@ -47,9 +47,7 @@ def build_ybus(buses, lines):
     return Ybus
 
 def newton_raphson_power_flow(filepath):
-    print("Inside newton_raphson_power_flow function")
     start_time = time.time()
-    print(f"Start time: {start_time}")
     system_data, buses, lines = parse_fivebus_pq(filepath)
     Ybus = build_ybus(buses, lines)
 
