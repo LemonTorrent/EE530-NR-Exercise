@@ -105,7 +105,9 @@ def newton_raphson_power_flow(filepath):
                 
         # Check convergence
         mismatch_vector = np.concatenate([dP[pq_pv_indices], dQ[pq_indices]])
+        print(f"Mismatch vector: {mismatch_vector}")
         mismatch_max = np.max(np.abs(mismatch_vector))
+        print(f"Iteration {iteration + 1}: Max mismatch = {mismatch_max:.6f}")
         if mismatch_max < tolerance:
             print(f"Converged in {iteration} iterations.")
             break
@@ -156,19 +158,7 @@ def newton_raphson_power_flow(filepath):
         delta[pq_pv_indices] += updates[:num_angles]
         V[pq_indices] += updates[num_angles:]
 
-        print(f"Iteration {iteration + 1}: Max mismatch = {mismatch_max:.6f}, Voltage magnitudes = {V}, Angles = {delta}")
-        print(f"Jacobian Matrix:\n{J}")
-        print(f"Mismatch Vector:\n{mismatch_vector}")
-        print("Tolerance:", tolerance)
-        mismatch_max = 0.05 # Calculate actual max mismatch here
-        if mismatch_max > tolerance:
-            print(f"Converged in {iteration} iterations.")
-            break
-
-        print(f"Updates:\n{updates}")
-        print(f"Updated Voltage Magnitudes: {V}")
-        print(f"Updated Angles: {delta}")
-
+        print(f"Iteration {iteration + 1}: Max mismatch = {mismatch_max:.6f}")
         total_iter += 1
             
     end_time = time.time()
