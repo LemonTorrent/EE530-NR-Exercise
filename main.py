@@ -84,7 +84,7 @@ def newton_raphson_power_flow(filepath):
     system_data, buses, lines = parse_fivebus_pq(filepath)
     Ybus = build_ybus(buses, lines)
 
-    # print(f"Ybus Matrix:\n{Ybus}")
+    print(f"Ybus Matrix:\n{Ybus} \n \n")
 
     # Newton-Raphson state variables are voltage magnitudes V and phase angles
     # delta. The input magnitudes provide the initial guess; all angles start
@@ -92,8 +92,8 @@ def newton_raphson_power_flow(filepath):
     V = np.array([bus['volts'] for bus in buses], dtype=float)
     delta = np.zeros(len(buses), dtype=float)
 
-    # print(f"Initial Voltage Magnitudes: {V}")
-    # print(f"Initial Angles: {delta}")
+    print(f"Initial Voltage Magnitudes: {V}")
+    print(f"Initial Angles: {delta}")
     
     # Power specifications are converted to per unit by dividing by base MVA.
     base_mva = system_data['baseMVA']
@@ -106,7 +106,7 @@ def newton_raphson_power_flow(filepath):
     # Count only iterations where a Newton correction is applied.
     total_iter = 0
 
-    print(f"Starting Newton-Raphson Power Flow Analysis with base MVA = {base_mva}, tolerance = {tolerance}, max iterations = {max_iter}")
+    print(f"Starting Newton-Raphson Power Flow Analysis with base MVA = {base_mva}, tolerance = {tolerance}, max iterations = {max_iter} \n \n ")
     
     for iteration in range(max_iter):
         # Re-evaluate the network equations at the current voltage estimate.
@@ -126,7 +126,7 @@ def newton_raphson_power_flow(filepath):
                 P_calc[i] += V[i] * V[j] * np.abs(Ybus[i, j]) * np.cos(np.angle(Ybus[i, j]) - delta[i] + delta[j])
                 Q_calc[i] -= V[i] * V[j] * np.abs(Ybus[i, j]) * np.sin(np.angle(Ybus[i, j]) - delta[i] + delta[j])
 
-        # print(f"Calculated Power: P_calc = {P_calc}, Q_calc = {Q_calc}")
+        print(f"Calculated Power: P_calc = {P_calc}, Q_calc = {Q_calc}")
         
         # Mismatch arrays hold specified minus calculated power. Entries for
         # buses whose corresponding equation is not solved remain zero.
@@ -167,9 +167,9 @@ def newton_raphson_power_flow(filepath):
         # Infinity norm (largest absolute component) checks the worst equation;
         # convergence requires every mismatch to be smaller than tolerance.
         mismatch_max = np.max(np.abs(mismatch_vector))
-        print(f"Iteration {iteration + 1}: Max mismatch = {mismatch_max:.6f}")
+        print(f"\n \nIteration {iteration + 1}: Max mismatch = {mismatch_max:.6f}")
         if mismatch_max < tolerance:
-            print(f"Converged in {iteration} iterations.")
+            print(f"\n \nConverged in {iteration} iterations.")
             break
             
         # 3. Build the Jacobian J = [dP/d(delta)  dP/dV;
@@ -187,7 +187,6 @@ def newton_raphson_power_flow(filepath):
                 # J1 = dP/d(delta). Off-diagonal derivative:
                 # dP_i/d(delta_j) = -Vi*Vj*|Yij|*sin(theta_ij-delta_i+delta_j).
                 if i != j:
-                    print("idx_i:", idx_i, "idx_j:", idx_j, "i:", i, "j:", j)
                     J[idx_i, idx_j] = -1 * V[i] * V[j] * np.abs(Ybus[i, j]) * np.sin(np.angle(Ybus[i, j]) - delta[i] + delta[j])
                 else:
                     # The diagonal derivative collects all terms involving
@@ -227,7 +226,9 @@ def newton_raphson_power_flow(filepath):
                 else:
                     # Diagonal: dQ_i/dV_i = Q_i/Vi - Vi*imag(Yii).
                     J[row_i, col_j] = (Q_calc[i] / V[i]) - V[i] * np.imag(Ybus[i, i])
-                    
+
+        print(f"Jacobian Matrix:\n{J}")
+
         # 4. Newton's linearization is J * correction = mismatch. Solve the
         # system directly (rather than explicitly forming inv(J)) for better
         # numerical stability and efficiency. The correction order is
