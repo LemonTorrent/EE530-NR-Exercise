@@ -5,7 +5,7 @@
 %
 % System data has the form:
 % SYSTEM    name       baseMVA    Voltage Tolerance
-SYSTEM  FiveBus_PQ    100            0.05
+SYSTEM  FiveBus_PQ    100            0.0001
 %
 % Bus data has the form:
 %BUS name       type  volts  Pgen   Qgen   Pload  Qload  Qcap
