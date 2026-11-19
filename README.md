@@ -7,7 +7,7 @@ calculation progress and convergence information in the terminal.
 ## Requirements
 
 - Python 3
-- NumPy (listed in `requirements.txt`)
+- NumPy and Matplotlib (listed in `requirements.txt`)
 
 ## Create and activate a virtual environment
 
@@ -30,7 +30,7 @@ activate the environment in Command Prompt instead:
 .venv\Scripts\activate.bat
 ```
 
-With the environment active, install the project dependency:
+With the environment active, install the project dependencies:
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -62,6 +62,44 @@ The path is resolved from the current working directory when it is relative.
 The program prints the bus-admittance matrix, iteration details, convergence
 status, processing time, and total iterations. It does not write results to an
 output file.
+
+## Compare processing time and iterations
+
+Run `main.py` once for each tolerance you want to compare. Set the tolerance
+on the `SYSTEM` record in the input file, then run the solver and note the
+tolerance and the two summary values printed at the end of the command-line
+output. For example:
+
+```text
+Processing time: 0.0054 seconds.
+Total iterations: 2
+```
+
+Record the processing time in seconds and the total iteration count for that
+run. Repeat with each tolerance, changing only the tolerance on the `SYSTEM`
+record so the results are comparable.
+
+Add the collected values to the corresponding lists in
+`figures\plot-graphs.py`:
+
+```python
+tolerances = [0.1, 0.01, 0.001]
+times = [0.0054, 0.0062, 0.0073]
+iterations = [2, 2, 3]
+```
+
+Each position across the three lists must describe the same run: for example,
+the time and iteration count at index `0` belong to tolerance `0.1`. Keep all
+three lists the same length. The script sorts the values by tolerance and
+generates two plots: `figures\nr_time_performance.png` (tolerance versus
+processing time) and `figures\nr_iterations_performance.png` (tolerance
+versus total iterations).
+
+From the project directory, generate the plots with:
+
+```powershell
+python figures\plot-graphs.py
+```
 
 ## Input file format
 
